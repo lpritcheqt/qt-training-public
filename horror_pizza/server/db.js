@@ -6,7 +6,7 @@ import path from 'node:path';
 const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'data');
 mkdirSync(dir, { recursive: true });
 
-export const db = new DatabaseSync(path.join(dir, 'orders.db'));
+export const db = new DatabaseSync(process.env.DB_PATH || path.join(dir, 'orders.db'));
 db.exec(`
   CREATE TABLE IF NOT EXISTS orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

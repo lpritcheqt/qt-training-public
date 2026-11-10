@@ -46,3 +46,10 @@ btw i want to see my original prompt from when i created the pizza app initially
 there's somethign wrong, it's pull up the fantasy pizza not horror pizza
 
 **Summary:** Found the old fantasy `pizza_order` server already listening on port 3000, so the horror app's page was never reached. Moved the horror app to port 3001 in `horror_pizza/server/index.js` and `horror_pizza/startup.bat`.
+
+## 2026-11-10 15:05 · main
+
+**Prompt:**
+i want to use playright as the tool to close the loop so you can use it to control the browswer and test the app for me
+
+**Summary:** Added Playwright (`@playwright/test`, run in installed Chrome) to `horror_pizza/` with `playwright.config.cjs` and `tests/app.spec.cjs` covering pricing, cart, validation, confirmation and the kitchen page. Added a `DB_PATH` option in `server/db.js` so tests use a temp database, `"type": "module"` and an `npm test` script in `package.json`. All 3 tests pass.

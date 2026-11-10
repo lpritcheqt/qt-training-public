@@ -1,0 +1,16 @@
+const { defineConfig } = require('@playwright/test');
+const os = require('node:os');
+const path = require('node:path');
+
+module.exports = defineConfig({
+  testDir: 'tests',
+  workers: 1,
+  use: { baseURL: 'http://localhost:3199', channel: 'chrome' },
+  webServer: {
+    command: 'node --disable-warning=ExperimentalWarning server/index.js',
+    url: 'http://localhost:3199/api/menu',
+    env: { PORT: '3199', DB_PATH: path.join(os.tmpdir(), `slashers-test-${Date.now()}.db`) },
+    reuseExistingServer: false,
+    timeout: 30000,
+  },
+});
