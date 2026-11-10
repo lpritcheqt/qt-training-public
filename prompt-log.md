@@ -74,3 +74,10 @@ i'm setting slowmo as high as 50000 and the speed is staying the same
 retry the push, i hit the wrong account
 
 **Summary:** Retried the push and it succeeded, so the earlier slow-motion change is now on `origin/main`. Only `prompt-log.md` changed.
+
+## 2026-11-10 16:00 · main
+
+**Prompt:**
+i want it to pause 3x the slowmo time at the end of each test before closing the window
+
+**Summary:** Added an `afterEach` hook in `horror_pizza/tests/app.spec.cjs` that holds the page open for 3x the `SLOWMO` delay in watch mode only. Verified each test ran 1.5 s longer at 500 ms, and normal `npm test` is unchanged.

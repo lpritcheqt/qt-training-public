@@ -1,5 +1,11 @@
 const { test, expect } = require('@playwright/test');
 
+// In watch mode (SLOWMO set), hold the finished page open for 3x the slow-motion delay.
+test.afterEach(async ({ page }) => {
+  const slow = Number(process.env.SLOWMO) || 0;
+  if (slow) await page.waitForTimeout(slow * 3);
+});
+
 const price = (page) => page.locator('.price-big').first();
 
 test('AC-1.x price updates with size and toppings', async ({ page }) => {
