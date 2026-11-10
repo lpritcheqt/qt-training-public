@@ -67,3 +67,10 @@ is there any way for me to watch you testing it?
 i'm setting slowmo as high as 50000 and the speed is staying the same
 
 **Summary:** Likely cause: `set SLOWMO=... && ...` does not set an environment variable in PowerShell. Added `horror_pizza/scripts/watch.cjs` so `npm run test:watch -- <ms>` works in any shell (also turns off the test timeout), and pointed the `test:watch` script in `horror_pizza/package.json` at it. Verified it slows the run (100 ms took 7.4 s versus about 4 s).
+
+## 2026-11-10 15:45 · main
+
+**Prompt:**
+retry the push, i hit the wrong account
+
+**Summary:** Retried the push and it succeeded, so the earlier slow-motion change is now on `origin/main`. Only `prompt-log.md` changed.
