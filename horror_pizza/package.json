@@ -7,6 +7,7 @@
     "build": "vite build client",
     "test": "node node_modules/@playwright/test/cli.js test",
     "test:watch": "node scripts/watch.cjs",
+    "test:ui": "node node_modules/@playwright/test/cli.js test --ui",
     "start": "node --disable-warning=ExperimentalWarning server/index.js"
   },
   "dependencies": {
