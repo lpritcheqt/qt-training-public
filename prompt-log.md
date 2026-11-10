@@ -137,3 +137,10 @@ you are the worker to fix app bugs for the pizza app
 i want to implement themes in the app and i want a theme picker on the public page. the horror theme is default, the name of the pizza place stays the same but the catch phrase can change for each theme. I want two new themes: unicorns and rainbows is one theme, quiktrip corporation is the other theme. item names can also change to go best with each theme but prices don't change.
 
 **Summary:** Asked three questions (remember choice: yes, kitchen follows the picker, QT theme from the brand skill), then added a Theme picker to the public page in `horror_pizza/client/src/App.vue`, with themes defined in `themes.js` and the shared selection in `useTheme.js` (saved in localStorage, horror default). Moved colors in `style.css` into theme variables, added six SVGs (unicorn and QT sets, no QT logo recreation), updated `OrderView.vue` and `KitchenView.vue`, and added `tests/themes.spec.cjs` (20 tests). Full suite: 119 of 119 pass.
+
+## 2026-11-10 18:45 · main
+
+**Prompt:**
+i want a vision impared high contrast theme, we will name it High Contrast
+
+**Summary:** Added a fourth "High Contrast" theme (yellow and white on black, plain item names, 44 px controls, thick yellow focus outline) in `horror_pizza/client/src/themes.js` and `style.css`, plus three SVGs. After your note "use the WCAG rules" I targeted WCAG 2.2 AAA and added `tests/accessibility.spec.cjs` (16 WCAG checks) and High Contrast cases in `tests/themes.spec.cjs`. Full suite: 137 of 137 pass.

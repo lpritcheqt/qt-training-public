@@ -75,6 +75,34 @@ html[data-theme='quiktrip'] {
   --ready-fg: #000000;
   --deco-opacity: 1;
 }
+/* High Contrast: built to WCAG 2.2 AAA (7:1 text, 3:1 controls, visible focus). Yellow and white on black. */
+html[data-theme='high-contrast'] {
+  font-size: 112.5%;
+  --accent: #FFFF00;
+  --accent-hover: #FFFFFF;
+  --accent-fg: #000000;
+  --text: #FFFFFF;
+  --panel: #000000;
+  --page-bg: #000000;
+  --banner-bg: #000000;
+  --banner-fg: #FFFFFF;
+  --border: #FFFFFF;
+  --opt-border: #FFFFFF;
+  --input-border: #FFFFFF;
+  --input-bg: #000000;
+  --price: #FFFF00;
+  --h1-color: #FFFFFF;
+  --h1-shadow: none;
+  --heading-font: Arial, Helvetica, sans-serif;
+  --body-font: Arial, Helvetica, sans-serif;
+  --err-fg: #FFFFFF;
+  --err-bg: #000000;
+  --new-bg: #FFFF00;
+  --new-fg: #000000;
+  --ready-bg: #FFFFFF;
+  --ready-fg: #000000;
+  --deco-opacity: 1;
+}
 
 * { box-sizing: border-box; }
 body {
@@ -152,3 +180,41 @@ input[type=number] {
 .order-head { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
 .order-head .spacer { margin-left: auto; }
 ul.plain-list { margin: .4rem 0; padding-left: 1.2rem; }
+
+/* High Contrast overrides (WCAG 2.2 AAA) */
+html[data-theme='high-contrast'] h1,
+html[data-theme='high-contrast'] h2 { letter-spacing: 0; }
+html[data-theme='high-contrast'] .tagline { font-style: normal; opacity: 1; }
+html[data-theme='high-contrast'] small,
+html[data-theme='high-contrast'] .plain { opacity: 1; font-size: .9em; }
+html[data-theme='high-contrast'] a { color: #FFFFFF; text-decoration: underline; font-weight: bold; }
+html[data-theme='high-contrast'] .panel { border-width: 2px; }
+html[data-theme='high-contrast'] .bats { display: none; }
+html[data-theme='high-contrast'] label[for='cust'] { display: block; margin-bottom: .6rem; }
+html[data-theme='high-contrast'] .banner a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+html[data-theme='high-contrast'] .banner { border-bottom-width: 4px; }
+html[data-theme='high-contrast'] .line { border-bottom: 2px solid #FFFFFF; }
+html[data-theme='high-contrast'] button {
+  border: 2px solid #FFFFFF; min-height: 2.75rem; font-weight: bold;
+}
+html[data-theme='high-contrast'] button:hover:not(:disabled) { color: #000000; }
+html[data-theme='high-contrast'] button:disabled {
+  opacity: 1; background: #000000; color: #FFFFFF; border: 2px dashed #FFFFFF;
+}
+html[data-theme='high-contrast'] button.link { border: 0; background: none; color: #FFFF00; font-weight: bold; }
+html[data-theme='high-contrast'] button.link:hover:not(:disabled) { background: #FFFFFF; color: #000000; }
+html[data-theme='high-contrast'] label.opt { border-width: 2px; min-height: 2.75rem; }
+html[data-theme='high-contrast'] label.opt:hover { background: #222222; }
+html[data-theme='high-contrast'] label.opt:has(input:checked) { outline: 3px solid #FFFF00; outline-offset: 0; }
+html[data-theme='high-contrast'] input[type=checkbox],
+html[data-theme='high-contrast'] input[type=radio] { width: 1.5rem; height: 1.5rem; accent-color: #FFFF00; }
+html[data-theme='high-contrast'] input[type=text],
+html[data-theme='high-contrast'] input[type=number],
+html[data-theme='high-contrast'] .theme-picker select { border-width: 2px; min-height: 2.75rem; }
+html[data-theme='high-contrast'] input[type=number] { width: 5rem; }
+html[data-theme='high-contrast'] input::placeholder { color: #D9D9D9; opacity: 1; }
+html[data-theme='high-contrast'] .error { border: 3px solid #FFFFFF; }
+html[data-theme='high-contrast'] .status { border: 2px solid #FFFFFF; padding: .2rem .7rem; }
+html[data-theme='high-contrast'] :focus-visible {
+  outline: 4px solid #FFFF00; outline-offset: 3px;
+}

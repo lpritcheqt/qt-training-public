@@ -9,6 +9,9 @@ import decoUnicorn from './assets/deco-rainbow.svg';
 import logoQt from './assets/logo-qt.svg';
 import pizzaQt from './assets/pizza-qt.svg';
 import decoQt from './assets/deco-qt.svg';
+import logoHc from './assets/logo-hc.svg';
+import pizzaHc from './assets/pizza-hc.svg';
+import decoHc from './assets/deco-hc.svg';
 
 export const DEFAULT_THEME = 'horror';
 
@@ -89,6 +92,33 @@ export const THEMES = [
       mushrooms: 'Fresh Stop Mushrooms',
       onions: 'Road Trip Onions',
       peppers: 'Green Light Peppers',
+    },
+  },
+  {
+    // Designed to WCAG 2.2 AAA: plain wording, 7:1+ text contrast, strong focus outline.
+    id: 'high-contrast',
+    label: 'High Contrast',
+    tagline: 'Easy to read. Easy to order.',
+    logo: logoHc,
+    logoAlt: 'Elm St Pizza pizza slice icon',
+    pizza: pizzaHc,
+    deco: decoHc,
+    text: {
+      buildHeading: 'Build your pizza',
+      cartHeading: 'Your order',
+      successHeading: 'Your order is placed',
+      emptyCart: 'Your order is empty. Add a pizza to get started.',
+      payNote: 'Pay at the counter when you arrive for pickup.',
+      namePlaceholder: 'Type your name',
+      kitchenHeading: 'Kitchen',
+      kitchenEmpty: 'There are no orders yet.',
+    },
+    sizes: { small: 'Small Pizza', large: 'Large Pizza' },
+    toppings: {
+      pepperoni: 'Pepperoni',
+      mushrooms: 'Mushrooms',
+      onions: 'Onions',
+      peppers: 'Green Peppers',
     },
   },
 ];

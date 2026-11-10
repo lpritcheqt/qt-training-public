@@ -26,18 +26,26 @@ const THEMES = {
     small: 'The Quick Grab', large: 'The Full Tank',
     toppings: ['Pit Stop Pepperoni', 'Fresh Stop Mushrooms', 'Road Trip Onions', 'Green Light Peppers'],
   },
+  'high-contrast': {
+    label: 'High Contrast',
+    tagline: 'Easy to read. Easy to order.',
+    build: 'Build your pizza',
+    kitchen: 'Kitchen',
+    small: 'Small Pizza', large: 'Large Pizza',
+    toppings: ['Pepperoni', 'Mushrooms', 'Onions', 'Green Peppers'],
+  },
 };
 
 const pick = (page, id) => page.getByLabel('Theme').selectOption(id);
 const dataTheme = (page) => page.evaluate(() => document.documentElement.dataset.theme);
 
 test.describe('Theme picker', () => {
-  test('horror is the default theme and the picker lists all three themes', async ({ page }) => {
+  test('horror is the default theme and the picker lists all four themes', async ({ page }) => {
     await page.goto('/');
     expect(await dataTheme(page)).toBe('horror');
     await expect(page.getByLabel('Theme')).toHaveValue('horror');
     const options = await page.getByLabel('Theme').locator('option').allInnerTexts();
-    expect(options).toEqual(['Horror', 'Unicorns & Rainbows', 'QuikTrip Corporation']);
+    expect(options).toEqual(['Horror', 'Unicorns & Rainbows', 'QuikTrip Corporation', 'High Contrast']);
   });
 
   test('the picker is on the public page but not on the kitchen page', async ({ page }) => {
@@ -142,7 +150,7 @@ test.describe('Theme picker', () => {
       await pick(page, id);
       colors.add(await bg());
     }
-    expect(colors.size).toBe(3);
+    expect(colors.size).toBe(4);
   });
 
   test('QuikTrip theme uses QT red as the accent color', async ({ page }) => {
