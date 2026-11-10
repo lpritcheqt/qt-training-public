@@ -39,3 +39,10 @@ btw i want to see my original prompt from when i created the pizza app initially
 /plan use the requirements at https://github.com/phase2interactive/qt-training-public/blob/pass-2/requirements.md to create an all new pizza ordering app, the tech stack is view for front end, node for backend, sqlite for database. i want the theme to be horror movies themed with all items horror movie theme as well as the graphics and product names. create a starup.bat file to start up the application via a doubleclick. if at any point what i want differes from the requirements doc, default to the requirements doc. do not add features that are not in the requirements. ask me questions rather than make assumptions.
 
 **Summary:** Fetched the requirements, asked design questions, got a plan approved, and built the new horror-themed app in `horror_pizza/` (Express and `node:sqlite` server, Vue 3 and Vite front end, SVG art, `startup.bat`). Smoke-tested the API and persistence across a restart; the user approved disabling npm TLS checking for the one install command.
+
+## 2026-11-10 14:40 · main
+
+**Prompt:**
+there's somethign wrong, it's pull up the fantasy pizza not horror pizza
+
+**Summary:** Found the old fantasy `pizza_order` server already listening on port 3000, so the horror app's page was never reached. Moved the horror app to port 3001 in `horror_pizza/server/index.js` and `horror_pizza/startup.bat`.

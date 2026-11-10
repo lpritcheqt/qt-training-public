@@ -23,7 +23,7 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-echo Starting Slashers Slice at http://localhost:3000
-start "" http://localhost:3000/
+echo Starting Slashers Slice at http://localhost:3001
+start "" http://localhost:3001/
 call npm start
 pause
