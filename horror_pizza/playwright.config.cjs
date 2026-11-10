@@ -5,6 +5,7 @@ const path = require('node:path');
 module.exports = defineConfig({
   testDir: 'tests',
   workers: 1,
+  reporter: [['list'], ['html', { open: 'never' }], ['./reporters/markdown-reporter.cjs']],
   use: {
     baseURL: 'http://localhost:3199',
     channel: 'chrome',

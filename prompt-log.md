@@ -88,3 +88,10 @@ i want it to pause 3x the slowmo time at the end of each test before closing the
 in the requirements doc, the first line was "Neighborhood Pizza" and most people used that as the name of the company, i want to stick with the horror theme but change the company name to something related. Elm St Pizza mayb?
 
 **Summary:** Renamed the shop from "Slashers' Slice" to "Elm St Pizza" and changed the tagline to "Pickup pizza so good you won't fall asleep on it." in `horror_pizza/client/index.html`, `client/src/App.vue`, `server/index.js`, `startup.bat`, `package.json` and `tests/app.spec.cjs`. Rebuilt and all 3 Playwright tests pass.
+
+## 2026-11-10 16:40 · main
+
+**Prompt:**
+more tests: i want tests to cover the full use of the app including kitchen screen test and tests that might fail. at the end of the testing i want a report of all the tests, failures or bugs if any found. do not change any code or try to solve any problems. write the new tests and i will run them with the playwright command
+
+**Summary:** Added 4 spec files plus `tests/helpers.cjs` in `horror_pizza/tests/` (ordering, kitchen, API, resilience and restart tests, 99 in total) and a markdown reporter in `horror_pizza/reporters/` that writes `reports/test-report.md`. Only `playwright.config.cjs` and `.gitignore` were changed; no app code was touched. One validation run gave 92 passed and 7 failed, left unfixed.
