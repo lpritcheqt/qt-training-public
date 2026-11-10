@@ -5,7 +5,11 @@ const path = require('node:path');
 module.exports = defineConfig({
   testDir: 'tests',
   workers: 1,
-  use: { baseURL: 'http://localhost:3199', channel: 'chrome' },
+  use: {
+    baseURL: 'http://localhost:3199',
+    channel: 'chrome',
+    launchOptions: { slowMo: Number(process.env.SLOWMO) || 0 },
+  },
   webServer: {
     command: 'node --disable-warning=ExperimentalWarning server/index.js',
     url: 'http://localhost:3199/api/menu',
