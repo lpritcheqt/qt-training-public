@@ -1,8 +1,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import pizzaImg from '../assets/pizza.svg';
+import { useTheme } from '../useTheme.js';
 
-const menu = ref({ sizes: [], toppings: [] });
+const { theme, applyNames } = useTheme();
+
+const rawMenu = ref({ sizes: [], toppings: [] });
+const menu = computed(() => applyNames(rawMenu.value));
 const size = ref('small');
 const toppings = ref([]);
 const cart = ref([]);
@@ -15,7 +18,7 @@ onMounted(async () => {
   try {
     const res = await fetch('/api/menu');
     if (!res.ok) throw new Error('bad status');
-    menu.value = await res.json();
+    rawMenu.value = await res.json();
   } catch {
     error.value = 'Sorry, the menu could not be loaded. Please refresh the page and try again.';
   }
@@ -86,7 +89,7 @@ function newOrder() {
 
 <template>
   <section v-if="confirmation" class="panel success">
-    <h2>Your Fate Is Sealed!</h2>
+    <h2>{{ theme.text.successHeading }}</h2>
     <p>Your order was placed successfully.</p>
     <div class="num">Order #{{ confirmation.id }}</div>
     <p>Name: <strong>{{ confirmation.name }}</strong></p>
@@ -101,14 +104,14 @@ function newOrder() {
       </div>
       <div class="total"><span>Total</span><span>{{ money(confirmation.totalCents) }}</span></div>
     </div>
-    <p>Pay at the counter when you arrive for pickup. If you dare.</p>
+    <p>{{ theme.text.payNote }}</p>
     <button @click="newOrder">Order Again</button>
   </section>
 
   <template v-else>
     <div class="grid2">
       <section class="panel">
-        <h2>Build Your Nightmare</h2>
+        <h2>{{ theme.text.buildHeading }}</h2>
         <h3>Size</h3>
         <label v-for="s in menu.sizes" :key="s.id" class="opt">
           <input type="radio" v-model="size" :value="s.id" />
@@ -123,15 +126,15 @@ function newOrder() {
         </label>
         <p class="plain">No toppings selected means a plain cheese pizza.</p>
         <div class="line" style="border: 0">
-          <img :src="pizzaImg" alt="" width="56" height="56" />
+          <img :src="theme.pizza" alt="" width="56" height="56" />
           <div class="info">Price of this pizza<br /><span class="price-big">{{ money(currentPrice) }}</span></div>
           <button @click="addToOrder">Add to Order</button>
         </div>
       </section>
 
       <section class="panel">
-        <h2>Your Doomed Order</h2>
-        <p v-if="!cart.length" class="plain">Nothing here yet. The kitchen is hungry...</p>
+        <h2>{{ theme.text.cartHeading }}</h2>
+        <p v-if="!cart.length" class="plain">{{ theme.text.emptyCart }}</p>
         <div v-for="(l, i) in cart" :key="i" class="line">
           <div class="info">
             <strong>{{ sizeOf(l.size)?.name }}</strong> <small>({{ sizeOf(l.size)?.plain }})</small><br />
@@ -147,7 +150,7 @@ function newOrder() {
         <div class="total"><span>Total</span><span>{{ money(cartTotal) }}</span></div>
 
         <label for="cust">Your name (for pickup)</label>
-        <input id="cust" type="text" v-model="name" maxlength="80" placeholder="Name on the tombstone" />
+        <input id="cust" type="text" v-model="name" maxlength="80" :placeholder="theme.text.namePlaceholder" />
         <div v-if="error" class="error" role="alert">{{ error }}</div>
         <p class="plain">Pickup only. Payment is collected at the counter.</p>
         <button :disabled="submitting || !cart.length || !name.trim()" @click="submit">Place Order</button>

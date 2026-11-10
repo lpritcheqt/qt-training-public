@@ -1,8 +1,12 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useTheme } from '../useTheme.js';
+
+const { theme, applyNames } = useTheme();
 
 const orders = ref([]);
-const menu = ref({ sizes: [], toppings: [] });
+const rawMenu = ref({ sizes: [], toppings: [] });
+const menu = computed(() => applyNames(rawMenu.value));
 const error = ref('');
 let timer;
 
@@ -28,7 +32,7 @@ async function markReady(o) {
 
 onMounted(async () => {
   try {
-    menu.value = await (await fetch('/api/menu')).json();
+    rawMenu.value = await (await fetch('/api/menu')).json();
   } catch {
     error.value = 'Cannot reach the server.';
   }
@@ -40,9 +44,9 @@ onUnmounted(() => clearInterval(timer));
 
 <template>
   <section class="panel">
-    <h2>Kitchen Crypt</h2>
+    <h2>{{ theme.text.kitchenHeading }}</h2>
     <div v-if="error" class="error" role="alert">{{ error }}</div>
-    <p v-if="!orders.length" class="plain">No orders yet. The dead are quiet.</p>
+    <p v-if="!orders.length" class="plain">{{ theme.text.kitchenEmpty }}</p>
     <article v-for="o in orders" :key="o.id" class="panel" style="margin-bottom: 0.75rem">
       <div class="order-head">
         <strong>Order #{{ o.id }}</strong>
