@@ -32,3 +32,10 @@ i'd like to use a local database, what are the options available with no fees?
 btw i want to see my original prompt from when i created the pizza app initially
 
 **Summary:** Showed the original pizza app prompt, then implemented the approved SQLite refactor in `pizza_order/`: new `server.js` and `server/` (SQLite schema, API, order rules, admin PIN, 37 server tests), new `js/api.js`, reworked `js/app.js`, `js/admin.js`, `js/test-runner.js`, `js/rules.js`, `js/menu.js`, plus `index.html`, `admin.html`, `test.html`, CSS, `CLAUDE.md`, `README.md`, `start.bat`. Removed `js/menu-data.js` and `js/custom-rules.js`. Rule tests: 20 of 21 rules passed, 1 manual.
+
+## 2026-11-10 14:27 · main
+
+**Prompt:**
+/plan use the requirements at https://github.com/phase2interactive/qt-training-public/blob/pass-2/requirements.md to create an all new pizza ordering app, the tech stack is view for front end, node for backend, sqlite for database. i want the theme to be horror movies themed with all items horror movie theme as well as the graphics and product names. create a starup.bat file to start up the application via a doubleclick. if at any point what i want differes from the requirements doc, default to the requirements doc. do not add features that are not in the requirements. ask me questions rather than make assumptions.
+
+**Summary:** Fetched the requirements, asked design questions, got a plan approved, and built the new horror-themed app in `horror_pizza/` (Express and `node:sqlite` server, Vue 3 and Vite front end, SVG art, `startup.bat`). Smoke-tested the API and persistence across a restart; the user approved disabling npm TLS checking for the one install command.
