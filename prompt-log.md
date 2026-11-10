@@ -123,3 +123,10 @@ i want to test the horror pizza app and save a report
 i want you to send the report to the worker
 
 **Summary:** Asked who "the worker" is and which channel to use (Azure DevOps work item, draft message, or committing the report). Nothing was sent; only `prompt-log.md` changed.
+
+## 2026-11-10 15:29 · main
+
+**Prompt:**
+you are the worker to fix app bugs for the pizza app
+
+**Summary:** Fixed the 7 failing Playwright tests in horror_pizza: server now rejects non-string or over-80-character names, non-list toppings and malformed JSON with JSON 400s, and returns a JSON 404 for unknown /api paths. The order page shows an alert if the menu cannot load, and long names wrap on the kitchen page (`server/index.js`, `OrderView.vue`, `KitchenView.vue`, `style.css`). Rebuilt; all 99 tests pass.

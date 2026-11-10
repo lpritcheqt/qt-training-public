@@ -12,7 +12,13 @@ const submitting = ref(false);
 const confirmation = ref(null);
 
 onMounted(async () => {
-  menu.value = await (await fetch('/api/menu')).json();
+  try {
+    const res = await fetch('/api/menu');
+    if (!res.ok) throw new Error('bad status');
+    menu.value = await res.json();
+  } catch {
+    error.value = 'Sorry, the menu could not be loaded. Please refresh the page and try again.';
+  }
 });
 
 const money = (cents) => `$${(cents / 100).toFixed(2)}`;

@@ -27,7 +27,11 @@ async function markReady(o) {
 }
 
 onMounted(async () => {
-  menu.value = await (await fetch('/api/menu')).json();
+  try {
+    menu.value = await (await fetch('/api/menu')).json();
+  } catch {
+    error.value = 'Cannot reach the server.';
+  }
   await load();
   timer = setInterval(load, 10000);
 });

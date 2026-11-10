@@ -31,16 +31,22 @@ function loadOrders(onlyId) {
 }
 
 app.post('/api/orders', (req, res) => {
-  const name = String(req.body?.name ?? '').trim();
+  const rawName = req.body?.name;
+  const name = typeof rawName === 'string' ? rawName.trim() : '';
   const items = req.body?.items;
   if (!name) return res.status(400).json({ error: 'Please tell us your name.' });
+  if (name.length > 80) return res.status(400).json({ error: 'Name must be 80 characters or fewer.' });
   if (!Array.isArray(items) || items.length === 0)
     return res.status(400).json({ error: 'Your order is empty.' });
 
   const lines = [];
   for (const it of items) {
+    if (!it || typeof it !== 'object')
+      return res.status(400).json({ error: 'Invalid item in order.' });
     const size = SIZES.find((s) => s.id === it.size);
     const qty = Number(it.quantity);
+    if (it.toppings !== undefined && !Array.isArray(it.toppings))
+      return res.status(400).json({ error: 'Invalid item in order.' });
     const ids = Array.isArray(it.toppings) ? [...new Set(it.toppings)] : [];
     const tops = ids.map((id) => TOPPINGS.find((t) => t.id === id));
     if (!size || !Number.isInteger(qty) || qty < 1 || qty > 99 || tops.includes(undefined))
@@ -78,9 +84,18 @@ app.patch('/api/orders/:id', (req, res) => {
   res.json(loadOrders(id)[0]);
 });
 
+app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found.' }));
+
 const dist = path.join(root, 'dist');
 app.use(express.static(dist));
 app.get('*', (_req, res) => res.sendFile(path.join(dist, 'index.html')));
+
+// Malformed JSON bodies and other errors get a JSON response.
+app.use((err, _req, res, _next) => {
+  if (err.status && err.status < 500) return res.status(err.status).json({ error: 'Invalid request.' });
+  console.error(err);
+  res.status(500).json({ error: 'Something went wrong.' });
+});
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => console.log(`Elm St Pizza running at http://localhost:${port}`));
