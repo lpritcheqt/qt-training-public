@@ -144,3 +144,10 @@ i want to implement themes in the app and i want a theme picker on the public pa
 i want a vision impared high contrast theme, we will name it High Contrast
 
 **Summary:** Added a fourth "High Contrast" theme (yellow and white on black, plain item names, 44 px controls, thick yellow focus outline) in `horror_pizza/client/src/themes.js` and `style.css`, plus three SVGs. After your note "use the WCAG rules" I targeted WCAG 2.2 AAA and added `tests/accessibility.spec.cjs` (16 WCAG checks) and High Contrast cases in `tests/themes.spec.cjs`. Full suite: 137 of 137 pass.
+
+## 2026-11-10 15:58 · main
+
+**Prompt:**
+you are the tester. test the horror_pizza app using each theme against the WCAG rules and give me a pdf report that is easy to understand with the results of the test for each theme. the report will give me only issues and a short recommended fix for each issue. i also want a "story points" estimate of each theme repairs (so one story will be horror, one rainbows, etc) and a draft in the document of each bug-story for each theme's fixes. each theme's reported issues should be listed, even if the number is 0.  for example "Theme: Horror        Issues: 13". i want you to use playwrite so that i can watch the testing. do not make any code changes.
+
+**Summary:** Ran a headed Playwright WCAG 2.2 AA audit of all four themes against a scratch copy of the app (no project code changed) and wrote `horror_pizza/reports/wcag-theme-report.pdf` with issues, fixes, story points and draft bug stories per theme. That folder is gitignored, so only `prompt-log.md` changed in git.
