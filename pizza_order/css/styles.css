@@ -295,3 +295,19 @@ dialog::backdrop { background: rgba(0, 0, 0, .7); }
 .help summary { cursor: pointer; font-weight: 600; }
 .help pre { background: var(--bg); padding: 0.75rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; }
 .test-actions { margin: 0 0 1rem; }
+
+/* ---- Server status ---- */
+.load-error { max-width: 90rem; margin: 1rem auto; padding: 0.75rem 1rem; border: 2px solid #ff5c5c; border-radius: var(--radius); background: #4a1620; color: #ffd0d0; }
+.load-error[hidden] { display: none; }
+.load-error code { background: var(--panel-2); padding: 0 0.3rem; border-radius: 4px; }
+
+/* ---- Admin login and file picker ---- */
+.admin .login .coupon-row { max-width: 24rem; }
+.admin .login input[type="password"] {
+  flex: 1; min-width: 0; min-height: 3rem; padding: 0.3rem 0.6rem; font: inherit; letter-spacing: 0.15em;
+  color: var(--text); background: var(--bg); border: 2px solid var(--muted); border-radius: var(--radius);
+}
+.admin .login[hidden], #editor[hidden] { display: none; }
+.file-btn { position: relative; cursor: pointer; overflow: hidden; }
+.file-btn input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.file-btn:focus-within { outline: 3px solid #fff; outline-offset: 2px; }

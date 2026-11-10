@@ -9,6 +9,12 @@
  */
 var L = OrderLogic;
 
+// The live menu, loaded from the database by test-runner.js before the tests run.
+function liveMenu() {
+  if (typeof LIVE_MENU === 'undefined' || !LIVE_MENU) throw new Error('The live menu has not been loaded from the server.');
+  return LIVE_MENU;
+}
+
 function assert(cond, msg) {
   if (!cond) throw new Error(msg || 'Assertion failed');
 }
@@ -196,8 +202,9 @@ var BUILTIN_RULES = [
         }
         assert(carts >= 1700, 'expected at least 1,700 carts, ran ' + carts);
       } },
-      { name: 'Live menu: every coupon is safe on carts built from the live items', run: function () {
-        var menu = loadMenu(), carts = [], n = 0;
+      { name: 'Live menu: every coupon type is safe on carts built from the live items', run: function () {
+        // Real coupon codes never leave the server (see "Server 11"), so the standard coupon types are used here.
+        var menu = Object.assign({}, liveMenu(), { coupons: fixtureMenu().coupons }), carts = [], n = 0;
         var avail = function (list) { return list.filter(isItemAvailable); };
         var tops = avail(menu.toppings).map(function (t) { return t.id; });
         avail(menu.sizes).forEach(function (s) {
@@ -364,7 +371,7 @@ var BUILTIN_RULES = [
   {
     id: 'Rule 6',
     name: 'Each coupon can only be used once',
-    description: 'A coupon marked as used is refused. (Used coupons are remembered in the browser that placed the order.)',
+    description: 'A coupon marked as used is refused. (Redemptions are stored in the database and enforced by the server: see the Server rules.)',
     tests: [
       { name: 'A used coupon is refused', run: function () {
         var menu = fixtureMenu(), cart = cartOf({ sides: { s500: 2 } }), order = newOrder();
@@ -380,18 +387,6 @@ var BUILTIN_RULES = [
       { name: 'The coupon on the current order keeps working after it is marked used (order placed)', run: function () {
         var menu = fixtureMenu(), cart = cartOf({ sides: { s500: 2 } }), order = { couponId: 'pct10' };
         assertEqual(L.discount(menu, cart, order, ['pct10']), 100);
-      } },
-      { name: 'Used-coupon storage records a coupon once and can clear it', run: function () {
-        var before = getUsedCoupons();
-        try {
-          clearUsedCoupons();
-          markCouponUsed('zz-test'); markCouponUsed('zz-test');
-          assertEqual(getUsedCoupons().filter(function (x) { return x === 'zz-test'; }).length, 1, 'recorded once');
-          unmarkCouponUsed('zz-test');
-          assertEqual(getUsedCoupons().indexOf('zz-test'), -1, 'cleared');
-        } finally {
-          setUsedCoupons(before);      // put the real data back
-        }
       } }
     ]
   },
@@ -433,7 +428,7 @@ var BUILTIN_RULES = [
     tests: [
       { name: 'The fixture and live menus pass validation', run: function () {
         assertEqual(validateMenu(fixtureMenu()).length, 0, 'fixture menu problems');
-        var live = validateMenu(loadMenu());
+        var live = validateMenu(Object.assign({}, liveMenu(), { coupons: [] }));
         assertEqual(live.length, 0, 'live menu problems: ' + live.join('; '));
       } },
       { name: 'A menu with every size sold out is rejected', run: function () {

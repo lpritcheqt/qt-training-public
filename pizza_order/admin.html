@@ -16,13 +16,22 @@
   <main class="admin-main">
     <h1>Menu Admin</h1>
     <p class="fine">
-      Change what customers can order. <strong>Save</strong> stores the menu in this browser, so the
-      order page (<a href="index.html">index.html</a>) picks it up on the next reload in the same browser.
-      To publish it to other browsers or devices, use <strong>Download menu-data.js</strong> and replace
-      <code>js/menu-data.js</code>. Prices are in dollars.
+      Change what customers can order. <strong>Save</strong> writes the menu to the pizza database, so the
+      order page (<a href="index.html">index.html</a>) shows it on its next reload, on every device that uses this server.
+      Prices are in dollars.
     </p>
-    <p class="fine">This page has no password. Anyone who can open this folder can edit the menu.</p>
 
+    <section class="admin-section login" id="login-section" hidden>
+      <h2>Admin login</h2>
+      <p class="fine">Enter the admin PIN from <code>config.json</code> (it was printed in the server window the first time the server ran).</p>
+      <div class="coupon-row">
+        <input type="password" id="pin-input" inputmode="numeric" autocomplete="off" maxlength="64" aria-label="Admin PIN">
+        <button type="button" class="btn primary" id="login-btn">Log in</button>
+      </div>
+      <p class="status error" id="login-msg" role="alert"></p>
+    </section>
+
+    <div id="editor" hidden>
     <div id="problems" class="problems" role="alert" hidden></div>
     <div id="status" class="status" role="status" aria-live="polite"></div>
 
@@ -93,18 +102,31 @@
       <button type="button" class="btn secondary" id="reset-used-btn">Reset all used coupons</button>
     </section>
 
+    <section class="admin-section">
+      <h2>Recent orders</h2>
+      <p class="fine" id="orders-empty" hidden>No orders have been placed yet.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Order</th><th>Placed</th><th>Items</th><th>Subtotal</th><th>Discount</th><th>Total</th><th>Coupon</th></tr></thead>
+        <tbody id="orders-body"></tbody>
+      </table></div>
+      <button type="button" class="btn secondary" id="refresh-orders-btn">Refresh orders</button>
+    </section>
+
     <div class="admin-actions">
       <button type="button" class="btn primary" id="save-btn">Save</button>
-      <button type="button" class="btn secondary" id="download-btn">Download menu-data.js</button>
       <button type="button" class="btn secondary" id="revert-btn">Discard unsaved changes</button>
       <button type="button" class="btn secondary" id="reset-btn">Reset to default menu</button>
+      <a class="btn secondary" href="/api/admin/export" download>Export backup (JSON)</a>
+      <label class="btn secondary file-btn">Load backup file&hellip;<input type="file" id="import-file" accept="application/json,.json"></label>
       <a class="btn secondary" href="test.html" target="_blank" rel="noopener">Rule tests</a>
       <a class="btn secondary" href="index.html">Back to order page</a>
+      <button type="button" class="btn secondary" id="logout-btn">Log out</button>
+    </div>
     </div>
   </main>
 
-  <script src="js/menu-data.js"></script>
   <script src="js/menu.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/admin.js"></script>
 </body>
 </html>

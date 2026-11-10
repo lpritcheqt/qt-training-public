@@ -12,6 +12,10 @@
     <img class="logo" src="images/logo.svg" alt="Dragon's Crunchy Knights Pizza">
   </header>
 
+  <p class="notice load-error" id="load-error" role="alert" hidden>
+    Can't reach the pizza server. Start it with <code>node server.js</code> (or double-click <code>start.bat</code>), then reload this page.
+  </p>
+
   <main class="layout">
     <section class="builder" aria-labelledby="builder-title">
       <h1 id="builder-title">Build Your Pizza</h1>
@@ -80,6 +84,7 @@
         <button type="button" class="btn primary" id="place-btn" disabled>Place Order</button>
         <button type="button" class="btn secondary" id="clear-btn" disabled>Clear Order</button>
       </div>
+      <p class="notice" id="place-msg" role="alert"></p>
     </aside>
   </main>
 
@@ -94,20 +99,19 @@
 
   <dialog id="confirm" aria-labelledby="confirm-title">
     <h2 id="confirm-title">Thanks for your order!</h2>
-    <p class="fine">This is a demo page. Nothing was sent anywhere.</p>
+    <p class="fine">Your order has been saved. Tax not included.</p>
     <ul class="cart recap" id="recap"></ul>
     <div class="sum-row"><span>Subtotal</span><span id="recap-subtotal"></span></div>
     <div class="sum-row discount" id="recap-discount-row" hidden><span id="recap-discount-label"></span><span id="recap-discount"></span></div>
     <div class="total-row"><span>Total</span><strong id="recap-total"></strong></div>
     <div class="order-actions">
       <button type="button" class="btn primary" id="new-order-btn">Start New Order</button>
-      <button type="button" class="btn secondary" id="close-confirm-btn">Back to Order</button>
     </div>
   </dialog>
 
-  <script src="js/menu-data.js"></script>
   <script src="js/menu.js"></script>
   <script src="js/logic.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

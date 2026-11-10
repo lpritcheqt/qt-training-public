@@ -1,7 +1,8 @@
 (function () {
   'use strict';
 
-  var draft = loadMenu();   // working copy being edited
+  var draft = null;   // working copy being edited (loaded from the server after login)
+  var used = {};      // couponId -> { orderId, redeemedAt }, from the database
   var dirty = false;
 
   function $(id) { return document.getElementById(id); }
@@ -106,8 +107,9 @@
   function usedCell(item) {
     var td = el('td');
     td.setAttribute('data-label', 'Used');
-    if (getUsedCoupons().indexOf(item.id) > -1) {
-      td.appendChild(el('span', null, 'Used '));
+    var u = used[item.id];
+    if (u) {
+      td.appendChild(el('span', null, 'Used (order #' + u.orderId + ') '));
       var b = el('button', 'icon-btn', 'Mark unused');
       b.type = 'button';
       b.setAttribute('data-unuse', item.id);
@@ -233,7 +235,14 @@
 
   function onClick(e) {
     var unuse = e.target.closest('[data-unuse]');
-    if (unuse) { unmarkCouponUsed(unuse.getAttribute('data-unuse')); render(); return; }
+    if (unuse) {
+      Api.unuseCoupon(unuse.getAttribute('data-unuse')).then(function (r) {
+        if (needLogin(r)) return;
+        if (r.ok) { used = r.data.used; render(); setStatus('Coupon marked unused.'); }
+        else setStatus(r.error.message, true);
+      }).catch(unreachable);
+      return;
+    }
     var rm = e.target.closest('[data-remove]');
     if (rm) {
       var list = rm.getAttribute('data-remove');
@@ -283,76 +292,187 @@
   function clean() {
     // Trim names before validation/saving.
     ['sizes', 'crusts', 'toppings', 'sides', 'drinks', 'coupons'].forEach(function (l) {
-      draft[l].forEach(function (it) {
+      (draft[l] || []).forEach(function (it) {
         if (typeof it.name === 'string') it.name = it.name.trim();
         if (typeof it.code === 'string') it.code = it.code.trim().toUpperCase();
       });
     });
   }
 
+  // ---- Talking to the server ---------------------------------------------
+  function unreachable() { setStatus('Could not reach the pizza server. Is it running?', true); }
+
+  function needLogin(r) {
+    if (r.status === 401) { showLogin('Your admin session ended. Please log in again.'); return true; }
+    return false;
+  }
+
+  function showLogin(msg) {
+    $('editor').hidden = true;
+    $('login-section').hidden = false;
+    $('login-msg').textContent = msg || '';
+    $('pin-input').value = '';
+    $('pin-input').focus();
+  }
+
+  function showEditor() {
+    $('login-section').hidden = true;
+    $('editor').hidden = false;
+  }
+
+  function showServerProblems(err) {
+    var box = $('problems');
+    box.textContent = '';
+    var list = err && err.problems && err.problems.length ? err.problems : [err ? err.message : 'The server rejected the menu.'];
+    var ul = el('ul');
+    list.forEach(function (p) { ul.appendChild(el('li', null, p)); });
+    box.appendChild(el('strong', null, 'The server did not save the menu:'));
+    box.appendChild(ul);
+    box.hidden = false;
+  }
+
+  function loadEditor() {
+    return Api.adminMenu().then(function (r) {
+      if (needLogin(r)) return;
+      if (!r.ok) { setStatus('Could not load the menu: ' + r.error.message, true); return; }
+      draft = r.data.menu;
+      used = r.data.used;
+      dirty = false;
+      $('problems').hidden = true;
+      setStatus('');
+      showEditor();
+      render();
+      loadOrders();
+    });
+  }
+
+  function login() {
+    $('login-msg').textContent = '';
+    Api.login($('pin-input').value).then(function (r) {
+      if (!r.ok) { $('login-msg').textContent = r.error ? r.error.message : 'Login failed.'; return; }
+      return loadEditor();
+    }).catch(function () { $('login-msg').textContent = 'Could not reach the pizza server. Is it running?'; });
+  }
+
+  function logout() {
+    if (dirty && !window.confirm('You have unsaved changes. Log out anyway?')) return;
+    dirty = false;
+    Api.logout().then(function () { showLogin('Logged out.'); }).catch(unreachable);
+  }
+
   function save() {
     clean();
     if (!check()) { setStatus('Not saved.', true); return; }
-    try {
-      saveMenu(draft);
+    Api.saveMenu(draft).then(function (r) {
+      if (needLogin(r)) return;
+      if (!r.ok) { showServerProblems(r.error); setStatus('Not saved.', true); return; }
+      draft = r.data.menu;
+      used = r.data.used;
       dirty = false;
-      setStatus('Saved in this browser. Reload the order page to see the change.');
+      $('problems').hidden = true;
+      setStatus('Saved to the database. Reload the order page to see the change.');
       render();
-    } catch (err) {
-      setStatus('Could not save in this browser (' + err.name + '). Use Download menu-data.js instead.', true);
-    }
-  }
-
-  function download() {
-    clean();
-    if (!check()) { setStatus('Fix the problems before downloading.', true); return; }
-    var text = '/* Exported from admin.html on ' + new Date().toLocaleString() + '.\n' +
-               ' * Replace js/menu-data.js with this file to publish the menu. */\n' +
-               'var MENU_OVERRIDE = ' + JSON.stringify(draft, null, 2) + ';\n';
-    var blob = new Blob([text], { type: 'text/javascript' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = 'menu-data.js';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
-    setStatus('Downloaded menu-data.js. Put it in the js folder, replacing the existing file.');
+    }).catch(unreachable);
   }
 
   function revert() {
     if (dirty && !window.confirm('Discard your unsaved changes?')) return;
-    draft = loadMenu();
-    dirty = false;
-    $('problems').hidden = true;
-    setStatus('Reloaded the last saved menu.');
-    render();
+    loadEditor().then(function () { setStatus('Reloaded the saved menu.'); }).catch(unreachable);
   }
 
   function reset() {
-    if (!window.confirm('Reset the menu to the built-in default? This removes any menu saved in this browser.')) return;
-    try { clearSavedMenu(); } catch (err) { /* ignore */ }
-    draft = cloneMenu(DEFAULT_MENU);
-    dirty = false;
-    $('problems').hidden = true;
-    setStatus('Reset to the default menu (js/menu.js).');
-    render();
+    if (!window.confirm('Reset the menu and coupons to the built-in defaults? Orders are kept.')) return;
+    Api.resetMenu().then(function (r) {
+      if (needLogin(r)) return;
+      if (!r.ok) { setStatus(r.error.message, true); return; }
+      draft = r.data.menu;
+      used = r.data.used;
+      dirty = false;
+      $('problems').hidden = true;
+      setStatus('Reset to the default menu.');
+      render();
+    }).catch(unreachable);
+  }
+
+  function resetUsed() {
+    if (!window.confirm('Mark every coupon as unused? Customers will be able to use them again.')) return;
+    Api.unuseAllCoupons().then(function (r) {
+      if (needLogin(r)) return;
+      if (!r.ok) { setStatus(r.error.message, true); return; }
+      used = r.data.used;
+      render();
+      setStatus('All coupons marked unused.');
+    }).catch(unreachable);
+  }
+
+  function importFile(e) {
+    var f = e.target.files[0];
+    if (!f) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var data = JSON.parse(reader.result);
+        var m = data && data.menu ? data.menu : data;
+        if (!m || !Array.isArray(m.sizes) || !Array.isArray(m.crusts)) {
+          throw new Error('This does not look like a pizza menu backup.');
+        }
+        ['toppings', 'sides', 'drinks', 'coupons'].forEach(function (k) { if (!Array.isArray(m[k])) m[k] = []; });
+        draft = m;
+        dirty = true;
+        render();
+        setStatus('Loaded ' + f.name + '. Review it, then press Save to apply it.');
+      } catch (err) {
+        setStatus('Could not load that file: ' + err.message, true);
+      }
+      e.target.value = '';
+    };
+    reader.readAsText(f);
+  }
+
+  function loadOrders() {
+    Api.orders(50).then(function (r) {
+      if (!r.ok) return;
+      var body = $('orders-body');
+      body.textContent = '';
+      $('orders-empty').hidden = r.data.orders.length > 0;
+      r.data.orders.forEach(function (o) {
+        var tr = el('tr');
+        var items = o.lines.map(function (l) {
+          return l.qty + ' \u00D7 ' + (l.kind === 'pizza' ? 'Pizza (' + l.description + ')' : l.description);
+        }).join('; ');
+        tr.appendChild(cell(el('span', null, '#' + o.id), 'Order'));
+        tr.appendChild(cell(el('span', null, new Date(o.createdAt).toLocaleString()), 'Placed'));
+        tr.appendChild(cell(el('span', null, items), 'Items'));
+        tr.appendChild(cell(el('span', null, '$' + dollars(o.subtotal)), 'Subtotal'));
+        tr.appendChild(cell(el('span', null, o.discount ? '-$' + dollars(o.discount) : '\u2014'), 'Discount'));
+        tr.appendChild(cell(el('span', null, '$' + dollars(o.total)), 'Total'));
+        tr.appendChild(cell(el('span', null, o.couponCode || '\u2014'), 'Coupon'));
+        body.appendChild(tr);
+      });
+    }).catch(function () { /* the orders list is optional */ });
   }
 
   window.addEventListener('beforeunload', function (e) {
     if (dirty) { e.preventDefault(); e.returnValue = ''; }
   });
 
-  document.addEventListener('change', onChange);
-  document.addEventListener('click', onClick);
+  document.addEventListener('change', function (e) { if (draft) onChange(e); });
+  document.addEventListener('click', function (e) { if (draft) onClick(e); });
   $('save-btn').addEventListener('click', save);
-  $('download-btn').addEventListener('click', download);
   $('revert-btn').addEventListener('click', revert);
-  $('reset-used-btn').addEventListener('click', function () {
-    if (window.confirm('Mark every coupon as unused in this browser?')) { clearUsedCoupons(); render(); setStatus('All coupons marked unused in this browser.'); }
-  });
   $('reset-btn').addEventListener('click', reset);
+  $('reset-used-btn').addEventListener('click', resetUsed);
+  $('login-btn').addEventListener('click', login);
+  $('pin-input').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); login(); } });
+  $('logout-btn').addEventListener('click', logout);
+  $('import-file').addEventListener('change', importFile);
+  $('refresh-orders-btn').addEventListener('click', loadOrders);
 
-  render();
+  // Start: show the editor if already logged in, otherwise the login form.
+  Api.session().then(function (r) {
+    if (r.ok && r.data.loggedIn) return loadEditor();
+    showLogin('');
+  }).catch(function () {
+    showLogin('Could not reach the pizza server. Is it running?');
+  });
 })();

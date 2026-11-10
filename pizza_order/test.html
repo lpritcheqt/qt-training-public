@@ -33,6 +33,10 @@
     <h2>Built-in rules</h2>
     <div id="builtin-results" class="rule-list"></div>
 
+    <h2>Server rules (database)</h2>
+    <p class="fine">These start their own temporary database behind the real server and check what the page cannot be trusted to enforce: limits, coupons, prices and the admin PIN.</p>
+    <div id="server-results" class="rule-list"></div>
+
     <h2>Your rules</h2>
     <div id="custom-results" class="rule-list"></div>
 
@@ -78,18 +82,18 @@ assertEqual(OrderLogic.subtotal(menu, cart), 1500, 'Large base price');</pre>
     <section class="admin-section">
       <h2>Keep your rules with the project</h2>
       <p class="fine">
-        Your rules are saved in this browser. To make them part of the project (so they are checked every time
-        the code changes), download the file and replace <code>js/custom-rules.js</code> with it.
+        Your rules are saved in the pizza database (<code>data/pizza.db</code>), which is not committed to git, and
+        saving or deleting a rule needs the admin login. To make them part of the project, download the file and
+        save it over <code>server/seed/custom-rules.json</code>; a new database starts with those rules.
       </p>
-      <button type="button" class="btn secondary" id="download-rules-btn">Download custom-rules.js</button>
+      <button type="button" class="btn secondary" id="download-rules-btn">Download custom-rules.json</button>
     </section>
   </main>
 
-  <script src="js/menu-data.js"></script>
   <script src="js/menu.js"></script>
   <script src="js/logic.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/rules.js"></script>
-  <script src="js/custom-rules.js"></script>
   <script src="js/test-runner.js"></script>
 </body>
 </html>

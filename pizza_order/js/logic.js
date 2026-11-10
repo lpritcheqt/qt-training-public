@@ -239,3 +239,6 @@ var OrderLogic = (function () {
     discount: discount, total: total
   };
 })();
+
+// Also usable from Node: the server requires this exact file so the rules are the same in both places.
+if (typeof module !== 'undefined' && module.exports) module.exports = OrderLogic;

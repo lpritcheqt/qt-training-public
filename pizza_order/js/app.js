@@ -1,8 +1,8 @@
 (function () {
   'use strict';
 
-  var L = OrderLogic;                 // business rules live in js/logic.js
-  var MENU = loadMenu();              // see js/menu.js; admin.html edits it
+  var L = OrderLogic;                 // business rules live in js/logic.js (the server runs the same file)
+  var MENU = null;                    // loaded from the database through the API (see boot())
 
   // ---- State -------------------------------------------------------------
   function firstAvailable(list, preferred) {
@@ -13,7 +13,8 @@
   function newBuilder() {
     return { size: firstAvailable(MENU.sizes, 'M'), crust: firstAvailable(MENU.crusts, 'hand'), toppings: [] };
   }
-  var builder = newBuilder();
+  var builder = null;                 // set in boot() once the menu has loaded
+  var placing = false;                // an order is being sent to the server
   var cart = [];                      // see js/logic.js for line shapes
   var order = { couponId: null };     // one coupon per order
   var couponMsg = null;               // { text, error }
@@ -24,7 +25,8 @@
   function $(id) { return document.getElementById(id); }
   function money(cents) { return L.money(cents); }
   function newId() { return nextId++; }
-  function usedIds() { return getUsedCoupons(); }
+  // "Already used" is decided by the server (database). The browser never sees redemptions.
+  function usedIds() { return []; }
   function el(tag, cls, text) {
     var e = document.createElement(tag);
     if (cls) e.className = cls;
@@ -233,14 +235,37 @@
   // ---- Coupons -----------------------------------------------------------
   function applyCoupon() {
     var input = $('coupon-input');
-    var r = L.tryApplyCoupon(MENU, cart, order, input.value, usedIds());
-    couponMsg = { text: r.message, error: !r.ok };
-    if (r.ok) input.value = '';
-    renderCart();
+    var code = input.value.trim();
+    // Already have one, or nothing typed: the shared rules produce the message.
+    if (order.couponId || !code) {
+      var quick = L.tryApplyCoupon(MENU, cart, order, input.value, usedIds());
+      couponMsg = { text: quick.message, error: !quick.ok };
+      renderCart();
+      return;
+    }
+    $('coupon-apply-btn').disabled = true;
+    Api.lookupCoupon(code).then(function (r) {
+      if (!r.ok) {
+        couponMsg = { text: r.error ? r.error.message : 'Could not check that coupon.', error: true };
+        return;
+      }
+      // The server only reveals a coupon that exists, is active and unused.
+      MENU.coupons = [r.data.coupon];
+      var res = L.tryApplyCoupon(MENU, cart, order, code, usedIds());
+      couponMsg = { text: res.message, error: !res.ok };
+      if (res.ok) input.value = '';
+      else MENU.coupons = [];
+    }).catch(function () {
+      couponMsg = { text: 'Could not reach the pizza server. Is it running?', error: true };
+    }).then(function () {
+      $('coupon-apply-btn').disabled = false;
+      renderCart();
+    });
   }
 
   function removeCoupon() {
     L.removeCoupon(order);
+    MENU.coupons = [];
     couponMsg = null;
     renderCart();
   }
@@ -279,7 +304,8 @@
     $('order-count').textContent = count ? '(' + label + ')' : '';
     renderTotals();
     $('mini-count').textContent = label;
-    $('place-btn').disabled = $('clear-btn').disabled = cart.length === 0;
+    $('place-btn').disabled = cart.length === 0 || placing;
+    $('clear-btn').disabled = cart.length === 0;
     refreshLimits();
   }
 
@@ -318,33 +344,107 @@
   function clearOrder() {
     cart = [];
     order = { couponId: null };
+    MENU.coupons = [];
     couponMsg = null;
+    $('place-msg').textContent = '';
     resetBuilder();
     renderCart();
   }
 
-  // ---- Confirmation ------------------------------------------------------
+  // ---- Placing the order -------------------------------------------------
+  // Only the items and the coupon code are sent. The server prices everything
+  // itself and enforces every rule again.
+  function orderPayload() {
+    var c = order.couponId && L.byId(MENU.coupons, order.couponId);
+    return {
+      cart: cart.map(function (l) {
+        return l.kind === 'pizza'
+          ? { kind: 'pizza', size: l.size, crust: l.crust, toppings: l.toppings.slice(), qty: l.qty }
+          : { kind: l.kind, itemId: l.itemId, qty: l.qty };
+      }),
+      couponCode: c ? c.code : undefined
+    };
+  }
+
   function placeOrder() {
-    if (!cart.length) return;
+    if (!cart.length || placing) return;
+    placing = true;
+    $('place-btn').disabled = true;
+    $('place-msg').textContent = 'Placing your order...';
+    Api.placeOrder(orderPayload()).then(function (r) {
+      if (r.ok) { $('place-msg').textContent = ''; showReceipt(r.data); return; }
+      handleOrderError(r.error || { code: 'server_error', message: 'The order could not be placed.' });
+    }).catch(function () {
+      $('place-msg').textContent = 'Could not reach the pizza server. Check that it is running, then try again.';
+    }).then(function () {
+      placing = false;
+      renderCart();
+    });
+  }
+
+  function handleOrderError(err) {
+    var msg = err.message;
+    if (err.code === 'coupon_used' || err.code === 'coupon_invalid' || err.code === 'coupon_limit') {
+      L.removeCoupon(order);
+      MENU.coupons = [];
+      couponMsg = { text: err.message, error: true };
+      msg = err.message + ' The coupon was removed. Check the total and place the order again.';
+    } else if (err.code === 'sold_out') {
+      msg = err.message + ' The menu was refreshed and unavailable items were removed from your order.';
+      syncMenu();
+    }
+    $('place-msg').textContent = msg;
+  }
+
+  function lineStillOrderable(l) {
+    if (l.kind === 'pizza') {
+      return L.isAvailable(L.byId(MENU.sizes, l.size)) && L.isAvailable(L.byId(MENU.crusts, l.crust)) &&
+        l.toppings.every(function (t) { return L.isAvailable(L.byId(MENU.toppings, t)); });
+    }
+    return L.isAvailable(L.extraItem(MENU, l));
+  }
+
+  // Reload the menu (an admin may have changed it) and drop lines that can no longer be ordered.
+  function syncMenu() {
+    return Api.getMenu().then(function (r) {
+      if (!r.ok) return;
+      var coupons = MENU.coupons;
+      MENU = r.data;
+      MENU.coupons = coupons;
+      cart = cart.filter(lineStillOrderable);
+      resetBuilder();
+      renderExtras();
+      renderCart();
+    });
+  }
+
+  function showReceipt(data) {
+    $('confirm-title').textContent = 'Thanks for your order! Order #' + data.orderId;
     var recap = $('recap');
     recap.textContent = '';
-    var pn = 0;
-    cart.forEach(function (l) { recap.appendChild(lineItem(l, l.kind === 'pizza' ? ++pn : 0, true)); });
-    var rc = order.couponId && L.byId(MENU.coupons, order.couponId);
-    $('recap-subtotal').textContent = money(L.subtotal(MENU, cart));
-    $('recap-discount-row').hidden = !rc;
-    if (rc) {
-      $('recap-discount-label').textContent = 'Coupon (' + rc.code + ')';
-      $('recap-discount').textContent = '-' + money(L.discount(MENU, cart, order, usedIds()));
-      markCouponUsed(rc.id);          // each coupon can only be used once
+    data.lines.forEach(function (l) {
+      var li = el('li');
+      li.appendChild(el('div', 'line-title', (l.kind === 'pizza' ? 'Pizza' : l.description) + (l.qty > 1 ? ' \u00D7 ' + l.qty : '')));
+      li.appendChild(el('div', 'line-desc', l.kind === 'pizza' ? l.description : (l.kind === 'side' ? 'Side' : 'Drink')));
+      var foot = el('div', 'line-foot');
+      foot.appendChild(el('span', 'line-price', money(l.lineTotal)));
+      li.appendChild(foot);
+      recap.appendChild(li);
+    });
+    $('recap-subtotal').textContent = money(data.subtotal);
+    $('recap-discount-row').hidden = !data.coupon;
+    if (data.coupon) {
+      $('recap-discount-label').textContent = 'Coupon (' + data.coupon.code + ')';
+      $('recap-discount').textContent = '-' + money(data.discount);
     }
-    $('recap-total').textContent = money(L.total(MENU, cart, order, usedIds()));
+    $('recap-total').textContent = money(data.total);
     var dlg = $('confirm');
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
   }
+
   function closeConfirm() {
     var dlg = $('confirm');
-    if (dlg.close) dlg.close(); else dlg.removeAttribute('open');
+    if (dlg.close) dlg.close(); else { dlg.removeAttribute('open'); clearOrder(); }
   }
 
   // ---- Init --------------------------------------------------------------
@@ -367,9 +467,23 @@
     $('coupon-input').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') { e.preventDefault(); applyCoupon(); }
     });
-    $('close-confirm-btn').addEventListener('click', closeConfirm);
-    $('new-order-btn').addEventListener('click', function () { closeConfirm(); clearOrder(); });
+    // The order is already saved when the receipt shows, so closing it starts a fresh order.
+    $('confirm').addEventListener('close', clearOrder);
+    $('new-order-btn').addEventListener('click', closeConfirm);
   }
 
-  init();
+  function boot() {
+    Api.getMenu().then(function (r) {
+      if (!r.ok) throw new Error('menu');
+      MENU = r.data;
+      MENU.coupons = [];                // coupons are never sent to the browser; see applyCoupon()
+      builder = newBuilder();
+      $('load-error').hidden = true;
+      init();
+    }).catch(function () {
+      $('load-error').hidden = false;
+    });
+  }
+
+  boot();
 })();
