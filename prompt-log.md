@@ -102,3 +102,10 @@ more tests: i want tests to cover the full use of the app including kitchen scre
 i want to run tests with playwright and watch them
 
 **Summary:** Extended `horror_pizza/scripts/watch.cjs` so `npm run test:watch -- <ms> <file or filter>` can run one spec file or test in a visible browser, and added a `test:ui` script (Playwright's interactive UI) in `horror_pizza/package.json`. Verified a single kitchen test runs.
+
+## 2026-11-10 17:10 · main
+
+**Prompt:**
+how many tests are there and how would you categorize each one? i want a simple list
+
+**Summary:** Listed all tests with Playwright's `--list` and grouped them by area: 99 tests in 5 files. No code files changed.
