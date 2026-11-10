@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Second Breakfast Salad">
+  <title>Second Breakfast Salad</title>
+  <circle cx="60" cy="60" r="54" fill="#b3122b" stroke="#f2b632" stroke-width="5"/>
+  <g fill="#6dbb5a" stroke="#3f8a3a" stroke-width="2.5">
+    <circle cx="40" cy="54" r="14"/><circle cx="60" cy="46" r="15"/><circle cx="80" cy="54" r="14"/>
+  </g>
+  <circle cx="52" cy="52" r="6" fill="#d6203d"/><circle cx="72" cy="50" r="5" fill="#d6203d"/>
+  <path d="M22 62 H98 C98 86 82 98 60 98 C38 98 22 86 22 62 Z" fill="#e9dcb0" stroke="#d98a1f" stroke-width="3" stroke-linejoin="round"/>
+</svg>

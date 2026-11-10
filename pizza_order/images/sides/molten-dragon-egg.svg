@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Molten Dragon Egg">
+  <title>Molten Dragon Egg</title>
+  <circle cx="60" cy="60" r="54" fill="#b3122b" stroke="#f2b632" stroke-width="5"/>
+  <path d="M60 20 C80 20 93 50 93 72 C93 91 78 101 60 101 C42 101 27 91 27 72 C27 50 40 20 60 20 Z" fill="#5a2a1a" stroke="#f2b632" stroke-width="3.5"/>
+  <path d="M42 46 L54 58 L47 66 L61 77 L54 90" fill="none" stroke="#ff9f2e" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <g fill="#ff9f2e"><circle cx="76" cy="62" r="3"/><circle cx="72" cy="82" r="2.5"/></g>
+</svg>

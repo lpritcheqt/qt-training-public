@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Dragon Fire Orange">
+  <title>Dragon Fire Orange</title>
+  <circle cx="60" cy="60" r="54" fill="#b3122b" stroke="#f2b632" stroke-width="5"/>
+  <rect x="38" y="24" width="44" height="74" rx="9" fill="#e8832a" stroke="#f5f1e8" stroke-width="3"/>
+  <rect x="38" y="36" width="44" height="7" fill="#f2b632"/>
+  <rect x="38" y="82" width="44" height="7" fill="#f2b632"/>
+  <ellipse cx="60" cy="24" rx="22" ry="5" fill="#c9c6bf" stroke="#f5f1e8" stroke-width="2"/>
+  <path d="M60 46 C68 55 72 59 72 67 C72 75 66 81 60 81 C54 81 48 75 48 67 C48 61 54 57 56 51 C58 55 60 55 60 46 Z" fill="#ffd86b" stroke="#b3122b" stroke-width="1.5"/>
+</svg>

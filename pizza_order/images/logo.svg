@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 124" role="img" aria-labelledby="t d">
+  <title id="t">Dragon's Crunchy Knights Pizza</title>
+  <desc id="d">A crimson knight's shield with dragon horns and a pepperoni pizza, beside the company name.</desc>
+  <g>
+    <!-- dragon horns -->
+    <path d="M30 30 C16 24 12 12 14 2 C26 6 36 14 42 26 Z" fill="#f2b632"/>
+    <path d="M90 30 C104 24 108 12 106 2 C94 6 84 14 78 26 Z" fill="#f2b632"/>
+    <!-- shield -->
+    <path d="M60 16 L106 28 V62 C106 88 86 106 60 118 C34 106 14 88 14 62 V28 Z" fill="#b3122b" stroke="#f2b632" stroke-width="5" stroke-linejoin="round"/>
+    <!-- pizza -->
+    <circle cx="60" cy="66" r="31" fill="#d98a1f"/>
+    <circle cx="60" cy="66" r="26" fill="#ffd86b"/>
+    <g stroke="#d98a1f" stroke-width="1.6" stroke-linecap="round">
+      <line x1="60" y1="66" x2="60" y2="40"/>
+      <line x1="60" y1="66" x2="82.5" y2="53"/>
+      <line x1="60" y1="66" x2="82.5" y2="79"/>
+      <line x1="60" y1="66" x2="60" y2="92"/>
+      <line x1="60" y1="66" x2="37.5" y2="79"/>
+      <line x1="60" y1="66" x2="37.5" y2="53"/>
+    </g>
+    <g fill="#8f0d20">
+      <circle cx="60" cy="52" r="5"/>
+      <circle cx="73" cy="60" r="5"/>
+      <circle cx="73" cy="74" r="5"/>
+      <circle cx="60" cy="80" r="5"/>
+      <circle cx="47" cy="74" r="5"/>
+      <circle cx="47" cy="60" r="5"/>
+    </g>
+    <circle cx="60" cy="66" r="4" fill="#ffd86b"/>
+  </g>
+  <g font-family="Georgia, 'Times New Roman', serif" font-weight="bold">
+    <text x="130" y="48" font-size="36" fill="#f2b632">DRAGON'S</text>
+    <text x="130" y="82" font-size="27" fill="#ffffff" letter-spacing="1">CRUNCHY KNIGHTS</text>
+    <text x="131" y="110" font-size="22" fill="#ff6a5c" letter-spacing="9">PIZZA</text>
+  </g>
+</svg>

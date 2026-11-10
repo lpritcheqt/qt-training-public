@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Rule Tests – Dragon's Crunchy Knights Pizza</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="admin testpage">
+  <header class="site-header">
+    <img class="logo" src="images/logo.svg" alt="Dragon's Crunchy Knights Pizza">
+  </header>
+
+  <main class="admin-main">
+    <h1>Rule Tests</h1>
+    <p class="fine">
+      These tests check that the order page follows its business rules, like unit tests in C#.
+      Press <strong>Run Tests</strong> after any change. A rule passes only when every test inside it passes.
+      <strong>Manual</strong> rules have no automatic check and are listed as reminders.
+    </p>
+
+    <div class="admin-actions test-actions">
+      <button type="button" class="btn primary" id="run-btn">Run Tests</button>
+      <a class="btn secondary" href="admin.html">Back to Admin</a>
+      <a class="btn secondary" href="index.html">Order page</a>
+    </div>
+
+    <div id="summary" class="summary" role="status" aria-live="polite">Tests have not been run yet.</div>
+    <div id="machine-summary" hidden></div>
+
+    <h2>Built-in rules</h2>
+    <div id="builtin-results" class="rule-list"></div>
+
+    <h2>Your rules</h2>
+    <div id="custom-results" class="rule-list"></div>
+
+    <section class="admin-section" id="rule-form-section">
+      <h2 id="form-title">Add a rule</h2>
+      <p class="fine">
+        Describe something that must always be true. Optionally add JavaScript test code so it is checked
+        automatically; without code the rule is saved as a manual reminder.
+      </p>
+      <div class="form-grid">
+        <label for="rule-name">Rule name</label>
+        <input type="text" id="rule-name" maxlength="120" placeholder="e.g. Large pizzas cost at least $12.99">
+
+        <label for="rule-desc">What must always be true</label>
+        <textarea id="rule-desc" rows="2" maxlength="500" placeholder="Plain-English description of the rule"></textarea>
+
+        <label for="rule-code">Test code (optional)</label>
+        <textarea id="rule-code" class="code" rows="8" spellcheck="false" placeholder="// JavaScript. Call assert(condition, 'message') to fail, or return false."></textarea>
+      </div>
+      <details class="help">
+        <summary>How to write test code</summary>
+        <p class="fine">Your code runs as the body of a function. These are available:</p>
+        <ul class="fine">
+          <li><code>assert(condition, message)</code> and <code>assertEqual(actual, expected, message)</code> &ndash; fail the rule when wrong.</li>
+          <li><code>OrderLogic</code> &ndash; the order logic the page uses (see <code>js/logic.js</code>).</li>
+          <li><code>MENU</code> &ndash; the live menu from the admin page. <code>fixtureMenu()</code> &ndash; a fixed test menu (prices in cents).</li>
+          <li><code>makeIds()</code> &ndash; makes line ids. <code>cartOf({ sides: { s500: 2 } })</code> &ndash; builds a cart quickly.</li>
+        </ul>
+<pre>// Example: a Large pizza with no toppings costs its base price
+var menu = fixtureMenu();
+var cart = [];
+OrderLogic.addPizzaLine(menu, cart, { size: 'L', crust: 'hand', toppings: [] }, makeIds());
+assertEqual(OrderLogic.subtotal(menu, cart), 1500, 'Large base price');</pre>
+      </details>
+      <div class="admin-actions">
+        <button type="button" class="btn primary" id="save-rule-btn">Save rule</button>
+        <button type="button" class="btn secondary" id="try-rule-btn">Try it now</button>
+        <button type="button" class="btn secondary" id="cancel-rule-btn" hidden>Cancel edit</button>
+      </div>
+      <p class="status" id="form-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="admin-section">
+      <h2>Keep your rules with the project</h2>
+      <p class="fine">
+        Your rules are saved in this browser. To make them part of the project (so they are checked every time
+        the code changes), download the file and replace <code>js/custom-rules.js</code> with it.
+      </p>
+      <button type="button" class="btn secondary" id="download-rules-btn">Download custom-rules.js</button>
+    </section>
+  </main>
+
+  <script src="js/menu-data.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/logic.js"></script>
+  <script src="js/rules.js"></script>
+  <script src="js/custom-rules.js"></script>
+  <script src="js/test-runner.js"></script>
+</body>
+</html>

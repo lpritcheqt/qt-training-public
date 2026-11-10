@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Wyvern Wings">
+  <title>Wyvern Wings</title>
+  <circle cx="60" cy="60" r="54" fill="#b3122b" stroke="#f2b632" stroke-width="5"/>
+  <path d="M20 82 C22 42 56 28 98 34 C86 40 86 48 92 54 C82 54 80 62 84 70 C74 66 68 72 68 80 C56 72 40 74 20 82 Z" fill="#f2b632" stroke="#d98a1f" stroke-width="3" stroke-linejoin="round"/>
+  <g stroke="#d98a1f" stroke-width="3" stroke-linecap="round">
+    <line x1="20" y1="82" x2="98" y2="34"/><line x1="20" y1="82" x2="92" y2="54"/><line x1="20" y1="82" x2="84" y2="70"/>
+  </g>
+</svg>

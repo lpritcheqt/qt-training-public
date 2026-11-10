@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Dragon Tears Spring Water">
+  <title>Dragon Tears Spring Water</title>
+  <circle cx="60" cy="60" r="54" fill="#b3122b" stroke="#f2b632" stroke-width="5"/>
+  <rect x="54" y="20" width="12" height="9" rx="2" fill="#f2b632"/>
+  <path d="M54 29 H66 L68 40 C80 46 82 58 82 66 V92 C82 97 79 100 74 100 H46 C41 100 38 97 38 92 V66 C38 58 40 46 52 40 Z" fill="#4fb3d9" stroke="#f5f1e8" stroke-width="3" stroke-linejoin="round"/>
+  <rect x="38" y="58" width="44" height="34" fill="#f2b632" opacity=".9"/>
+  <path d="M60 64 C65 71 68 75 68 79 C68 83 64 86 60 86 C56 86 52 83 52 79 C52 75 55 71 60 64 Z" fill="#9fdcf5" stroke="#fff" stroke-width="2"/>
+</svg>

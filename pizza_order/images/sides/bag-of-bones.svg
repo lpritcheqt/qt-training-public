@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Bag of Bones">
+  <title>Bag of Bones</title>
+  <circle cx="60" cy="60" r="54" fill="#b3122b" stroke="#f2b632" stroke-width="5"/>
+  <g fill="#f5f1e8" stroke="#f5f1e8" stroke-linecap="round">
+    <g transform="rotate(40 60 60)">
+      <line x1="30" y1="60" x2="90" y2="60" stroke-width="9"/>
+      <circle cx="27" cy="54" r="6" stroke="none"/><circle cx="27" cy="66" r="6" stroke="none"/>
+      <circle cx="93" cy="54" r="6" stroke="none"/><circle cx="93" cy="66" r="6" stroke="none"/>
+    </g>
+  </g>
+  <g fill="#f5f1e8" stroke="#f5f1e8" stroke-linecap="round">
+    <g transform="rotate(-40 60 60)">
+      <line x1="30" y1="60" x2="90" y2="60" stroke-width="9"/>
+      <circle cx="27" cy="54" r="6" stroke="none"/><circle cx="27" cy="66" r="6" stroke="none"/>
+      <circle cx="93" cy="54" r="6" stroke="none"/><circle cx="93" cy="66" r="6" stroke="none"/>
+    </g>
+  </g>
+</svg>

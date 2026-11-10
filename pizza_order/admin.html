@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Menu Admin – Dragon's Crunchy Knights Pizza</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="admin">
+  <header class="site-header">
+    <img class="logo" src="images/logo.svg" alt="Dragon's Crunchy Knights Pizza">
+  </header>
+
+  <main class="admin-main">
+    <h1>Menu Admin</h1>
+    <p class="fine">
+      Change what customers can order. <strong>Save</strong> stores the menu in this browser, so the
+      order page (<a href="index.html">index.html</a>) picks it up on the next reload in the same browser.
+      To publish it to other browsers or devices, use <strong>Download menu-data.js</strong> and replace
+      <code>js/menu-data.js</code>. Prices are in dollars.
+    </p>
+    <p class="fine">This page has no password. Anyone who can open this folder can edit the menu.</p>
+
+    <div id="problems" class="problems" role="alert" hidden></div>
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+
+    <section class="admin-section">
+      <h2>Sizes</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Name</th><th>Detail</th><th>Base price ($)</th><th>Topping price multiplier</th><th>Status</th><th></th></tr></thead>
+        <tbody id="sizes-body"></tbody>
+      </table></div>
+      <button type="button" class="btn secondary" data-add="sizes">+ Add size</button>
+    </section>
+
+    <section class="admin-section">
+      <h2>Crusts</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Name</th><th>Extra charge ($)</th><th>Status</th><th></th></tr></thead>
+        <tbody id="crusts-body"></tbody>
+      </table></div>
+      <button type="button" class="btn secondary" data-add="crusts">+ Add crust</button>
+    </section>
+
+    <section class="admin-section">
+      <h2>Toppings</h2>
+      <p class="base-row">
+        <label for="topping-base">Price per topping, Small/Medium ($)</label>
+        <input type="number" id="topping-base" min="0" step="0.01" inputmode="decimal">
+      </p>
+      <p class="fine">Larger sizes use the size's topping price multiplier above.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Icon</th><th>Name</th><th>Status</th><th></th></tr></thead>
+        <tbody id="toppings-body"></tbody>
+      </table></div>
+      <button type="button" class="btn secondary" data-add="toppings">+ Add topping</button>
+    </section>
+
+    <section class="admin-section">
+      <h2>Sides</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Name</th><th>Description</th><th>Price ($)</th><th>Image file</th><th>Status</th><th></th></tr></thead>
+        <tbody id="sides-body"></tbody>
+      </table></div>
+      <button type="button" class="btn secondary" data-add="sides">+ Add side</button>
+      <p class="fine">Image file is a path inside this folder, e.g. <code>images/sides/bag-of-bones.svg</code>. Leave it blank to use the default picture. Put new image files in the <code>images</code> folder.</p>
+    </section>
+
+    <section class="admin-section">
+      <h2>Drinks (dragon-brand only)</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Name</th><th>Description</th><th>Price ($)</th><th>Image file</th><th>Status</th><th></th></tr></thead>
+        <tbody id="drinks-body"></tbody>
+      </table></div>
+      <button type="button" class="btn secondary" data-add="drinks">+ Add drink</button>
+      
+    </section>
+
+    <section class="admin-section">
+      <h2>Coupons</h2>
+      <p class="fine">
+        Customers type the code on the order page. Rules for every coupon: requires a purchase of at least $5.00,
+        only one coupon per order, and each coupon can be used once. A free side or drink coupon makes the
+        lowest-priced matching item in the order free. "Used" is tracked in the browser the order was placed in.
+      </p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Name</th><th>Code</th><th>Type</th><th>Value</th><th>Status</th><th>Used in this browser</th><th></th></tr></thead>
+        <tbody id="coupons-body"></tbody>
+      </table></div>
+      <button type="button" class="btn secondary" data-add="coupons">+ Add coupon</button>
+      <button type="button" class="btn secondary" id="reset-used-btn">Reset all used coupons</button>
+    </section>
+
+    <div class="admin-actions">
+      <button type="button" class="btn primary" id="save-btn">Save</button>
+      <button type="button" class="btn secondary" id="download-btn">Download menu-data.js</button>
+      <button type="button" class="btn secondary" id="revert-btn">Discard unsaved changes</button>
+      <button type="button" class="btn secondary" id="reset-btn">Reset to default menu</button>
+      <a class="btn secondary" href="test.html" target="_blank" rel="noopener">Rule tests</a>
+      <a class="btn secondary" href="index.html">Back to order page</a>
+    </div>
+  </main>
+
+  <script src="js/menu-data.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
