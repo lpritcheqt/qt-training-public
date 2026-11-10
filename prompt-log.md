@@ -60,3 +60,10 @@ i want to use playright as the tool to close the loop so you can use it to contr
 is there any way for me to watch you testing it?
 
 **Summary:** Added a `test:watch` script (visible Chrome window) and a `SLOWMO` setting in `horror_pizza/playwright.config.cjs` and `horror_pizza/package.json`. Ran the 3 tests in slow motion; all passed.
+
+## 2026-11-10 15:35 · main
+
+**Prompt:**
+i'm setting slowmo as high as 50000 and the speed is staying the same
+
+**Summary:** Likely cause: `set SLOWMO=... && ...` does not set an environment variable in PowerShell. Added `horror_pizza/scripts/watch.cjs` so `npm run test:watch -- <ms>` works in any shell (also turns off the test timeout), and pointed the `test:watch` script in `horror_pizza/package.json` at it. Verified it slows the run (100 ms took 7.4 s versus about 4 s).
