@@ -81,3 +81,10 @@ retry the push, i hit the wrong account
 i want it to pause 3x the slowmo time at the end of each test before closing the window
 
 **Summary:** Added an `afterEach` hook in `horror_pizza/tests/app.spec.cjs` that holds the page open for 3x the `SLOWMO` delay in watch mode only. Verified each test ran 1.5 s longer at 500 ms, and normal `npm test` is unchanged.
+
+## 2026-11-10 16:15 · main
+
+**Prompt:**
+in the requirements doc, the first line was "Neighborhood Pizza" and most people used that as the name of the company, i want to stick with the horror theme but change the company name to something related. Elm St Pizza mayb?
+
+**Summary:** Renamed the shop from "Slashers' Slice" to "Elm St Pizza" and changed the tagline to "Pickup pizza so good you won't fall asleep on it." in `horror_pizza/client/index.html`, `client/src/App.vue`, `server/index.js`, `startup.bat`, `package.json` and `tests/app.spec.cjs`. Rebuilt and all 3 Playwright tests pass.

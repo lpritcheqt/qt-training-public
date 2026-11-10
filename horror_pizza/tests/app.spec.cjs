@@ -60,6 +60,6 @@ test('AC-2.x cart, qty, remove; AC-3.x validation, confirmation; AC-4.x kitchen'
 
 test('theme is horror, not fantasy', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: "Slashers' Slice" })).toBeVisible();
+  await expect(page.getByRole('heading', { name: "Elm St Pizza" })).toBeVisible();
   await page.screenshot({ path: 'test-results/order-page.png', fullPage: true });
 });

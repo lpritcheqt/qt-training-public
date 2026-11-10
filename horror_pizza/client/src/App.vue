@@ -9,10 +9,10 @@ const isKitchen = window.location.pathname.startsWith('/kitchen');
 
 <template>
   <header class="banner">
-    <img :src="logo" alt="Slashers Slice skull logo" class="logo" />
+    <img :src="logo" alt="Elm St Pizza skull logo" class="logo" />
     <div>
-      <h1>Slashers' Slice</h1>
-      <p class="tagline">Pickup pizza so good it's murder.</p>
+      <h1>Elm St Pizza</h1>
+      <p class="tagline">Pickup pizza so good you won't fall asleep on it.</p>
     </div>
     <nav>
       <a v-if="isKitchen" href="/">Order Page</a>

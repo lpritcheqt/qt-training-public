@@ -83,4 +83,4 @@ app.use(express.static(dist));
 app.get('*', (_req, res) => res.sendFile(path.join(dist, 'index.html')));
 
 const port = process.env.PORT || 3001;
-app.listen(port, () => console.log(`Slashers Slice running at http://localhost:${port}`));
+app.listen(port, () => console.log(`Elm St Pizza running at http://localhost:${port}`));

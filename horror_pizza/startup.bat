@@ -1,6 +1,6 @@
 @echo off
 cd /d "%~dp0"
-title Slashers Slice
+title Elm St Pizza
 where node >nul 2>nul
 if errorlevel 1 (
   echo Node.js is required but was not found. Install it from https://nodejs.org and try again.
@@ -23,7 +23,7 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-echo Starting Slashers Slice at http://localhost:3001
+echo Starting Elm St Pizza at http://localhost:3001
 start "" http://localhost:3001/
 call npm start
 pause
